@@ -44,10 +44,8 @@ GSA <- function(n,mPref,zPref){
         }
       }	
     }
-    if (length(m.samski)==0){	# če ni več nobenega samskega se ustaviš
-      pari <- data.frame("Moški"=z.prej,"Ženska"=1:n)
-      return(list(mPref=mPref,zPref=zPref,ujemanje=pari))
-    }
   }
+  pari <- data.frame("Moški"=z.prej,"Ženska"=1:n)
+  return(list(mPref=mPref,zPref=zPref,ujemanje=pari))
 }
 
