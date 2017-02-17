@@ -78,3 +78,8 @@ ggplot(podatki,
   xlab("Število oseb posameznega spola")+
   ylab("Čas (v sekundah)") + 
   ggtitle("Čas algoritma, glede na število ljudi na posamezen spol")
+
+
+#naredimo tabelo primerjanj časa za oba algoritma
+primerjanje<-matrix(c(),ncol(2),byrow=TRUE)
+
