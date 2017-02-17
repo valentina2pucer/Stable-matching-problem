@@ -1,12 +1,14 @@
 ############## GALE SHAPLEY-ev ALGORITEM ##############
 
+#slučajno zgeneriramo matriki preferenc glede na n
+preference <- function(n){
+  M <<- replicate(n,sample(1:n))
+  Z <<- replicate(n,sample(1:n))
+  n <<- n #shranimo n
+}
 
-GSA <- function(n){
-  #v funkcijo vpišemo število moških in žensk (ki je enako) in matriki preferenc(poljubno)
-  #če matriki preferenc nista podani, jih slučajno zgeneriramo
-  mPref <<- replicate(n,sample(seq(1,n,1)))
-  zPref <<- replicate(n,sample(seq(1,n,1)))
-
+GSA <- function(n=n,mPref=M,zPref=Z){
+  #v funkcijo vpišemo število moških in žensk (ki je enako) ter matriki preferenc 
   m.samski <- 1:n #Moški, ki so samski (na začetku so vsi)
   zarocenke <- rep(0,n)
   m.zgodovina <- rep(0,n) #Število žensk, ki jih zaprosi moški
@@ -48,8 +50,9 @@ cas_GSA <- function(n){
   #Čas bomo za vsak n izračunali 10x in vzeli povprečje
   cas <- c()
   for (i in 1:10){
+    preference(n)
     start <- proc.time()[1]
-    GSA(n)
+    GSA(n,M,Z)
     end <- proc.time()[1]
     cas <- c(cas,end-start)
   }
@@ -57,5 +60,21 @@ cas_GSA <- function(n){
   return(cas_povp)
 }
 
+############## RISANJE GRAFA ##############
 
+velikost <- seq(10, 1000, 50)
+cas <- c()
+for (i in velikost){
+  cas <- c(cas,cas_GSA(i))
+}
 
+require(dplyr)
+require(ggplot2)
+podatki <- data_frame(velikost,cas)
+
+ggplot(podatki,
+       aes(x =velikost,y=cas)) + 
+  geom_point() + geom_line() + 
+  xlab("Število oseb posameznega spola")+
+  ylab("Čas (v sekundah)") + 
+  ggtitle("Čas algoritma, glede na število ljudi na posamezen spol")
