@@ -62,19 +62,49 @@ cas_GSA <- function(n){
 
 ############## RISANJE GRAFA ##############
 
-velikost <- seq(10, 1000, 50)
+#####PRIMERJAVA#####
+
+
+velikost <- seq(10, 100, 10)
 cas <- c()
 for (i in velikost){
   cas <- c(cas,cas_GSA(i))
 }
 
+#podatki, za enako velikosti iz Sage - ILP program
+cas_ILP <- c(0.017462, 0.152483, 0.382518, 1.108599, 2.505105, 5.243138, 9.407068, 17.756599, 31.881605, 108.086642)
+
+
 require(dplyr)
 require(ggplot2)
-podatki <- data_frame(velikost,cas)
+require(ggthemes)
+podatki <- data_frame(n = rep(velikost,2),cas = c(cas,cas_ILP), Algoritem = c(rep("Gale-Shapley",10),rep("ILP",10)))
 
-ggplot(podatki,
-       aes(x =velikost,y=cas)) + 
+graf_primerjava <- ggplot(podatki, aes(x =n,y=cas, colour=Algoritem)) +
   geom_point() + geom_line() + 
   xlab("Število oseb posameznega spola")+
   ylab("Čas (v sekundah)") + 
-  ggtitle("Čas algoritma, glede na število ljudi na posamezen spol")
+  ggtitle("Čas algoritma, glede na število ljudi na posamezen spol")+
+  theme(plot.title = element_text(hjust = 0.5))+
+  theme_bw()
+
+#####GS#####
+
+#Ker je Gale-Shapley-ev algoritem občutno hitrejši, si lahko privoščimo,
+#da čas algoritma izračunamo za večje podatke
+
+velikost2 <- seq(10, 1000, 10)
+cas2 <- c()
+for (i in velikost2){
+  cas2 <- c(cas2,cas_GSA(i))
+}
+podatki2 <- data_frame(n = velikost2, cas = cas2)
+
+
+graf_GS <- ggplot(podatki2, aes(x =n,y=cas)) +
+  geom_point() + geom_line() + 
+  labs(title="Čas algoritma - Gale-Shapley", x = "Število oseb posameznega spola", y =  "Čas (v sekundah)")+
+  theme_bw()+
+  theme(plot.title = element_text(hjust = 0.5))+
+  geom_smooth(method = "lm", formula = y ~ I(x^2))
+
